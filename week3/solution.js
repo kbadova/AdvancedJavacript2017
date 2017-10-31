@@ -54,4 +54,25 @@ function solution() {
   });
 }
 
-solution();
+// solution();
+
+function promisify(fn) {
+  return function(...args) {
+    return new Promise((resolve, reject) => {
+      fn(...args, function(err, data) {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        resolve(data);
+      });
+    });
+  };
+}
+
+const readFilePromise = promisify(fs.readFile);
+
+readFilePromise('./avg-scores.txt')
+  .then(console.log)
+  .catch(console.error);
