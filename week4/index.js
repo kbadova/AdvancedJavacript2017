@@ -3,28 +3,40 @@ var app = express();
 var https = require('https');
 const fs = require('fs');
 
-const re = /[a-z]{4,}/gi;
+const fourLettersRE = /\s[a-z]{4}\s/gi;
+const fiveLettersRE = /\s[a-z]{5}\s/gi;
+const sixLettersRE = /\s[a-z]{6}\s/gi;
 
-app.get('/work', function(req, res) {
+
+
+app.get('/work', function (req, res) {
   https.get('https://www.fmi.uni-sofia.bg/', robj => {
-    robj.on('data', data => {
-      debugger;
-      var dstr = data.toString();
-      var rres = null;
+    var result = {
+      'wordsWithFourLetters': 0,
+      'wordsWithFiveLetters': 0,
+      'wordsWithSixLetters': 0,
+    }
 
+    robj.on('data', data => {
+      var stringifiedData = data.toString();
+      var wordsWithFourLetters = null;
+      var wordsWithFiveLetters = null;
+      var wordsWithSixLetters = null;
+      
       do {
-        rres = re.exec(dstr);
-        if (rres) {
-        }
-      } while (rres);
-      // data.forEach(byte => {
-      //   fs.read(byte, data, 0, data.length, 0);
-      //   console.log(data.toString('utf8'));
-      // });
+        wordsWithFourLetters = fourLettersRE.exec(stringifiedData)
+        wordsWithFiveLetters = fiveLettersRE.exec(stringifiedData)
+        wordsWithSixLetters = sixLettersRE.exec(stringifiedData)
+
+        wordsWithFourLetters ? result['wordsWithFourLetters'] += wordsWithFourLetters.length : null
+        wordsWithFiveLetters ? result['wordsWithFiveLetters'] += wordsWithFiveLetters.length : null
+        wordsWithSixLetters ? result['wordsWithSixLetters'] += wordsWithSixLetters.length : null
+      } while (wordsWithFourLetters || wordsWithFiveLetters || wordsWithSixLetters);
+
     });
 
     robj.on('end', x => {
-      res.send('numcnts');
+      res.send(result);
       //            res.end()
     });
   });
