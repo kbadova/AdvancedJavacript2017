@@ -1,0 +1,15 @@
+<html>  
+  <body>
+  Hellooo
+
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    socket.on("sendData", (data) => {
+      console.log(data)
+    })
+  </script>
+      
+</html>
+
