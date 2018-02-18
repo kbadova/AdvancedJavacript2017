@@ -1,0 +1,15 @@
+<html>
+<form>
+  <input id="input" onchange="change()"></input>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  function change() {
+    var value = document.getElementById("input").value;
+    socket.emit('input', value)
+  }
+</script>
+    
+</html>
